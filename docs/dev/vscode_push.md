@@ -124,3 +124,35 @@ git push origin 你的分支名
 3. 推送失败：网络问题，或者仓库权限不足；确认分支名称正确
 4. mkdocs 网页找不到页面：检查 mkdocs.yml 的路径和 md 文件位置完全匹配
 5. 代码冲突：多人同时修改同一文件会出现冲突，解决冲突后再提交
+
+## 十、主仓库更新后同步当前工作分支
+
+在已经克隆的个人 Fork 中，先确认当前工作分支；以下以 `你的分支名` 为例。提交或暂存正在编辑的文件后，再进行同步。
+
+```bash
+git switch 你的分支名
+git status
+```
+
+首次同步时，添加主仓库地址。已经有 `upstream` 的话，直接查看地址即可，无需重复添加。
+
+```bash
+git remote add upstream https://github.com/OpenHUTB/.github.git
+git remote -v
+git fetch upstream master
+git merge upstream/master
+```
+
+`fetch` 只下载更新，`merge` 才会把主仓库的 `master` 合入当前工作分支。若出现冲突，在 VS Code 中检查冲突标记，保留需要的内容并保存文件；然后只暂存已解决的文件，并完成合并提交：
+
+```bash
+git add 路径/已解决的文件.md
+git commit -m "合并主仓库更新并解决冲突 / merge upstream updates and resolve conflicts"
+```
+
+没有冲突时，Git 会直接完成合并，无需再运行上述 `git add` 和 `git commit`。最后确认工作区状态，并推送当前工作分支，随后在原有 PR 中查看更新：
+
+```bash
+git status
+git push origin 你的分支名
+```
